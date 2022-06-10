@@ -9,7 +9,10 @@
     "/dist"
   ],
   "scripts": {
-    "build": "rmdir /s /q dist && tsc"
+    "build": "rmdir /s /q dist && tsc",
+    "publish-new-major": "npm run build && npm version major && npm publish",
+    "publish-new-minor": "npm run build && npm version minor && npm publish",
+    "publish-new-patch": "npm run build && npm version patch && npm publish"
   },
   "repository": {
     "type": "git",
