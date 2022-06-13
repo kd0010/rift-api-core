@@ -2,8 +2,16 @@ import { TQuery } from '.'
 
 export interface IAPICoreConfig {
   defaultHeaders?: string[][]
-  fetch?: typeof fetch | (() => Promise<any>)
+  fetch?: typeof fetch | TFetchingFunction
 }
+
+export type TFetchingFunction = (
+  url: string,
+  init: {[k: string]: any},
+) => Promise<{
+  status: number
+  json: () => Promise<any>
+}>
 
 export type TAPIRes<T> = {
   ok: true

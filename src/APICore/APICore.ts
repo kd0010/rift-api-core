@@ -1,11 +1,11 @@
 import { TFetchMethod, THeaders } from '../types'
-import { IAPICoreConfig, IFetchOptions, TAPIRes } from '../types/APICore'
+import { IAPICoreConfig, IFetchOptions, TAPIRes, TFetchingFunction } from '../types/APICore'
 import { is2XX, is3XX } from '../utils'
 
 export class APICore {
   headers: string[][]
   requestCount: number
-  #request: typeof fetch | (() => Promise<any>)
+  #request: typeof fetch | TFetchingFunction
   constructor(
     config: IAPICoreConfig={}
   ) {
