@@ -5,11 +5,13 @@ import { is2XX, is3XX } from '../utils'
 export class APICore {
   headers: string[][]
   requestCount: number
+  #request: typeof fetch | (() => Promise<any>)
   constructor(
     config: IAPICoreConfig={}
   ) {
     this.headers = config.defaultHeaders ?? []
     this.requestCount = -1
+    this.#request = config.fetch ?? fetch
   }
 
   appendHeaders(headers: THeaders) {
@@ -45,7 +47,7 @@ export class APICore {
     }
 
     try {
-      const res = await this._request(baseUrl, {
+      const res = await this.#request(baseUrl, {
         headers: this.headers,
         method: method,
         body: body ? JSON.stringify(body) : undefined,
@@ -73,13 +75,6 @@ export class APICore {
         status: 400,
       }
     }
-  }
-
-  _request(
-    input: RequestInfo | URL,
-    init?: RequestInit,
-  ) {
-    return fetch(input, init)
   }
 
   _createError(msg: string) {

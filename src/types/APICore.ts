@@ -1,7 +1,8 @@
 import { TQuery } from '.'
 
 export interface IAPICoreConfig {
-  defaultHeaders?: string[][],
+  defaultHeaders?: string[][]
+  fetch?: typeof fetch | (() => Promise<any>)
 }
 
 export type TAPIRes<T> = {
