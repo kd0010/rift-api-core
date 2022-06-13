@@ -45,7 +45,7 @@ export class APICore {
     }
 
     try {
-      const res = await fetch(baseUrl, {
+      const res = await this._request(baseUrl, {
         headers: this.headers,
         method: method,
         body: body ? JSON.stringify(body) : undefined,
@@ -73,6 +73,13 @@ export class APICore {
         status: 400,
       }
     }
+  }
+
+  _request(
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ) {
+    return fetch(input, init)
   }
 
   _createError(msg: string) {
