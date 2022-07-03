@@ -1,21 +1,23 @@
-import { TFetchMethod, THeaders } from '../types'
-import { IAPICoreConfig, IFetchOptions, TAPIRes, TFetchingFunction } from '../types/APICore'
+import { APIRes, FetchingFunction, Headers } from '../types'
+import { APICoreConfig, FetchOptions } from '../types/Interfaces'
 import { is2XX, is3XX } from '../utils'
 
 export class APICore {
-  headers: string[][]
+  headers: Headers
   requestCount: number
-  #request: typeof fetch | TFetchingFunction
+  #request: FetchingFunction
   constructor(
-    config: IAPICoreConfig={}
+    config: APICoreConfig={}
   ) {
-    this.headers = config.defaultHeaders ?? []
+    this.headers = []
     this.requestCount = -1
     this.#request = config.fetch ?? fetch
   }
 
-  appendHeaders(headers: THeaders) {
-    this.headers = this.headers.concat(Object.entries(headers))
+  appendHeaders(headers: Headers) {
+    for (let headerName in headers) {
+      this.headers[headerName] = headers[headerName]!
+    }
   }
 
   /**
@@ -25,14 +27,14 @@ export class APICore {
     this.requestCount = 0
   }
 
-  async _fetch<TRes, TReq>(
+  async _fetch<Res, Req>(
     baseUrl: string,
-    method?: TFetchMethod,
     {
-      body,
+      method,
       query,
-    }: IFetchOptions<TReq>={}
-  ): Promise<TAPIRes<TRes>> {
+      body,
+    }: FetchOptions<Req>={}
+  ): Promise<APIRes<Res>> {
     if (this.requestCount != -1) {
       ++this.requestCount
       // Print requests with # of 1, 2, 4, 6, ...
@@ -54,7 +56,8 @@ export class APICore {
       })
 
       if (!(is2XX(res.status) || is3XX(res.status))) {
-        console.error(`Non-200/-300 status code encountered:  ${res.status}`)
+        // DEV
+        // console.error(`Non-200/-300 status code encountered:  ${res.status}`)
         return {
           ok: false,
           data: await res.json() as unknown,
@@ -68,7 +71,8 @@ export class APICore {
         status: res.status,
       }
     } catch (e) {
-      console.error(e)
+      // DEV
+      // console.error(e)
       return {
         ok: false,
         data: null,

@@ -18,9 +18,9 @@
     "declaration": true,
     "noEmitOnError": true,
     "outDir": "./dist",
-    "removeComments": true,
     
     // ## Interop Constraints
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
 
     // ## Language and Environment
